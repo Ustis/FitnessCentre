@@ -1,7 +1,7 @@
 CREATE TABLE client
 (
     id            SERIAL PRIMARY KEY,
-    phoneNumber   CHARACTER VARYING(11)  NOT NULL,
+    phoneNumber   CHARACTER VARYING(11)  NOT NULL UNIQUE ,
     password      CHARACTER VARYING(60)  NOT NULL,
     full_name     CHARACTER VARYING(255) NOT NULL,
     birthday_date DATE                   NOT NULL,
