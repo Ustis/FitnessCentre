@@ -15,7 +15,7 @@ CREATE TABLE visit
 (
     id        SERIAL PRIMARY KEY,
     arrival   TIMESTAMP NOT NULL,
-    leaving   TIMESTAMP NOT NULL,
+    leaving   TIMESTAMP,
     client_id INTEGER REFERENCES client (id)
 );
 
