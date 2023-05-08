@@ -1,15 +1,19 @@
 CREATE TABLE client
 (
     id            SERIAL PRIMARY KEY,
-    phoneNumber   CHARACTER VARYING(11)  NOT NULL UNIQUE ,
+    phoneNumber   CHARACTER VARYING(11)  NOT NULL UNIQUE,
     password      CHARACTER VARYING(60)  NOT NULL,
     full_name     CHARACTER VARYING(255) NOT NULL,
     birthday_date DATE                   NOT NULL,
-    GENDER        CHARACTER VARYING(8)   NOT NULL
+    gender        CHARACTER VARYING(8)   NOT NULL
 );
 
+ALTER TABLE client
+    ADD COLUMN roles   CHARACTER VARYING(255) DEFAULT '["ROLE_USER"]' NOT NULL,
+    ADD COLUMN balance NUMERIC(10, 2)         DEFAULT 0               NOT NULL;
+
 CREATE UNIQUE INDEX client_PK on client (id);
-CREATE UNIQUE INDEX client_phone_number_idx on client(phoneNumber);
+CREATE UNIQUE INDEX client_phone_number_idx on client (phoneNumber);
 
 CREATE TABLE visit
 (

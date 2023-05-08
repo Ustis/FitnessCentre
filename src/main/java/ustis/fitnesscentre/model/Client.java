@@ -1,5 +1,6 @@
 package ustis.fitnesscentre.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Client {
@@ -9,6 +10,9 @@ public class Client {
     private String fullName;
     private LocalDate birthdayDate;
     private String gender;
+
+    private String roles;
+    private BigDecimal balance;
 
     public Client() {
     }
@@ -28,6 +32,17 @@ public class Client {
         this.fullName = fullName;
         this.birthdayDate = birthdayDate;
         this.gender = gender;
+    }
+
+    public Client(Long id, String phoneNumber, CharSequence password, String fullName, LocalDate birthdayDate, String gender, String roles, BigDecimal balance) {
+        this.id = id;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.fullName = fullName;
+        this.birthdayDate = birthdayDate;
+        this.gender = gender;
+        this.roles = roles;
+        this.balance = balance;
     }
 
     public Long getId() {
@@ -72,5 +87,22 @@ public class Client {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    // TODO поменять на GRANTEDAUTHORITIES при изменении аутентификации
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 }

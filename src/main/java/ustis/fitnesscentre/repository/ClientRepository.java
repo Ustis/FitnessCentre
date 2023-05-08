@@ -21,8 +21,7 @@ public class ClientRepository {
     public Optional<Client> findByPhoneNumber(String phoneNumber) {
         try {
             return Optional.ofNullable(this.jdbcTemplate.queryForObject(
-                    "SELECT id, phoneNumber, password, full_name, birthday_date, gender FROM client " +
-                            "WHERE phoneNumber = ?",
+                    "SELECT id, phoneNumber, password, full_name, birthday_date, gender, balance, roles FROM client WHERE phoneNumber = ?",
                     new Object[]{phoneNumber},
                     new ClientMapper()));
         } catch (EmptyResultDataAccessException exception) {
@@ -30,15 +29,27 @@ public class ClientRepository {
         }
     }
 
+    public void update(Client client) {
+        this.jdbcTemplate.update("UPDATE client SET phoneNumber = ?, password = ?, full_name = ?, birthday_date = ?, " +
+                        "gender = ?, balance = ? WHERE id = ?",
+                client.getPhoneNumber(), client.getPassword(), client.getFullName(),
+                java.sql.Date.valueOf(client.getBirthdayDate()), client.getGender(),
+                client.getBalance(),
+                client.getId()
+        );
+    }
+
+    // TODO придумать как выдавать роли
     public void save(Client client) {
         try {
             this.jdbcTemplate.update(
-                    "INSERT INTO client ( phonenumber, password, full_name, birthday_date, gender) \n" +
+                    "INSERT INTO client ( phonenumber, password, full_name, birthday_date, gender, balance, roles) \n" +
                             "VALUES ( ?, ? , ? , ? , ? );",
-                    client.getPhoneNumber(), client.getPassword(), client.getFullName(), java.sql.Date.valueOf(client.getBirthdayDate()), client.getGender()
+                    client.getPhoneNumber(), client.getPassword(), client.getFullName(),
+                    java.sql.Date.valueOf(client.getBirthdayDate()), client.getGender(),
+                    client.getBalance(), client.getRoles()
             );
         } catch (DataIntegrityViolationException e) {
-            // Обработка ошибки
             if (e.getMessage().contains("client_phone_number_idx")) {
                 throw new DuplicateKeyException("Пользователь с таким номером телефона уже существует");
             } else {
