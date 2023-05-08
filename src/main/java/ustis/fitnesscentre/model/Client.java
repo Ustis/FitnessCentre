@@ -3,7 +3,7 @@ package ustis.fitnesscentre.model;
 import java.time.LocalDate;
 
 public class Client {
-    private Integer id;
+    private Long id;
     private String phoneNumber;
     private CharSequence password;
     private String fullName;
@@ -21,7 +21,7 @@ public class Client {
         this.gender = gender;
     }
 
-    public Client(Integer id, String phoneNumber, CharSequence password, String fullName, LocalDate birthdayDate, String gender) {
+    public Client(Long id, String phoneNumber, CharSequence password, String fullName, LocalDate birthdayDate, String gender) {
         this.id = id;
         this.phoneNumber = phoneNumber;
         this.password = password;
@@ -30,7 +30,7 @@ public class Client {
         this.gender = gender;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
