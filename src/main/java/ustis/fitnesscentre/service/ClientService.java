@@ -29,6 +29,7 @@ public class ClientService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(client.getPhoneNumber())
                 .password(client.getPassword().toString())
+                .authorities("ROLE_USER")
                 .build();
     }
 

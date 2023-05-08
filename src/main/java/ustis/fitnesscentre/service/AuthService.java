@@ -44,4 +44,9 @@ public class AuthService {
         );
         clientService.save(client);
     }
+
+    public Client getClientFromToken(String token) throws AuthException {
+        return clientService.loadByPhoneNumber(jwtTokenUtil.getUsernameFromToken(token))
+                .orElseThrow(() -> new AuthException("Пользователь по данному токену не найден"));
+    }
 }

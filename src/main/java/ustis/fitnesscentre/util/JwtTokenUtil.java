@@ -1,8 +1,6 @@
 package ustis.fitnesscentre.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -73,9 +71,22 @@ public class JwtTokenUtil {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (JwtException e) {
+            return false;
         }
-        return false;
+        // TODO перенести логи в логгер после его подключения
+//        } catch (MalformedJwtException e) {
+//            System.out.println("Invalid JWT token: " + e.getMessage());
+//        } catch (UnsupportedJwtException e) {
+//            System.out.println("Unsupported JWT token: " + e.getMessage());
+//        } catch (SignatureException e) {
+//            System.out.println("Invalid JWT signature: " + e.getMessage());
+//        } catch (IllegalArgumentException e) {
+//            System.out.println("JWT token is empty or null: " + e.getMessage());
+//        } catch (Exception e) {
+//            System.out.println("Error while parsing JWT token: " + e.getMessage());
+//        }
     }
 }

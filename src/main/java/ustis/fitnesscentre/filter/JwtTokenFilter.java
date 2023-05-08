@@ -51,23 +51,30 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         UserDetails userDetails = null;
 
         try {
-             userDetails = clientService
+            userDetails = clientService
                     .loadUserByUsername(jwtTokenUtil.getUsernameFromToken(token));
-        } catch (UsernameNotFoundException ignored){
+        } catch (UsernameNotFoundException ignored) {
         }
-
-        UsernamePasswordAuthenticationToken
-                authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null,
-                userDetails == null ?
-                        List.of() : userDetails.getAuthorities()
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, userDetails.getPassword(), userDetails == null ? List.of() : userDetails.getAuthorities()
         );
+
+//        UsernamePasswordAuthenticationToken
+//                authentication = new UsernamePasswordAuthenticationToken(
+//                userDetails, null,
+//                userDetails == null ?
+//                        List.of() : userDetails.getAuthorities()
+//        );
 
         authentication.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request)
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        // ВАЖНО
+        // Следующая строка нужна для для передачи запроса следующему фильтру в цепочке, если JWT-токен отсутствует
+        // или не прошел проверку, или для продолжения обработки запроса
+        // однако ломает авторизацию из-за того что неправильно читает или удаляет токен
         chain.doFilter(request, response);
     }
 
