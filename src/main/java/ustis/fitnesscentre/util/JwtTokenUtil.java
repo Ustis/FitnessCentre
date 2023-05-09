@@ -1,6 +1,8 @@
 package ustis.fitnesscentre.util;
 
 import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,8 @@ public class JwtTokenUtil {
 
     @Value("${jwt.issuer}")
     private String jwtIssuer;
+
+    private final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -47,13 +51,13 @@ public class JwtTokenUtil {
     }
 
     public String generateToken(Client client) {
-        return doGenerateToken(client.getPhoneNumber());
+        return doGenerateToken(client.getPhoneNumber(), client.getRoles());
     }
 
-    private String doGenerateToken(String subject) {
+    private String doGenerateToken(String subject, String role) {
 
         Claims claims = Jwts.claims().setSubject(subject);
-        claims.put("scopes", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        claims.put("scopes", List.of(new SimpleGrantedAuthority(role)));
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -75,18 +79,9 @@ public class JwtTokenUtil {
             throw e;
         } catch (JwtException e) {
             return false;
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
         }
-        // TODO перенести логи в логгер после его подключения
-//        } catch (MalformedJwtException e) {
-//            System.out.println("Invalid JWT token: " + e.getMessage());
-//        } catch (UnsupportedJwtException e) {
-//            System.out.println("Unsupported JWT token: " + e.getMessage());
-//        } catch (SignatureException e) {
-//            System.out.println("Invalid JWT signature: " + e.getMessage());
-//        } catch (IllegalArgumentException e) {
-//            System.out.println("JWT token is empty or null: " + e.getMessage());
-//        } catch (Exception e) {
-//            System.out.println("Error while parsing JWT token: " + e.getMessage());
-//        }
+        return false;
     }
 }
