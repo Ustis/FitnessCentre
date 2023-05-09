@@ -8,7 +8,6 @@ public class RegisterReqest {
     private String phoneNumber;
     private CharSequence password;
     private CharSequence passwordConfirmation;
-
     private String fullName;
     private String birthdayDate;
     private String gender;

@@ -10,7 +10,6 @@ public class Client {
     private String fullName;
     private LocalDate birthdayDate;
     private String gender;
-
     private String roles;
     private BigDecimal balance;
 
@@ -45,6 +44,17 @@ public class Client {
         this.balance = balance;
     }
 
+    public Client(Long id, String phoneNumber, String fullName, LocalDate birthdayDate, String gender, String roles, BigDecimal balance) {
+        this.id = id;
+        this.phoneNumber = phoneNumber;
+        this.fullName = fullName;
+        this.birthdayDate = birthdayDate;
+        this.gender = gender;
+        this.roles = roles;
+        this.balance = balance;
+    }
+
+    public void setId(Long id) { this.id = id; }
     public Long getId() {
         return id;
     }
@@ -89,7 +99,6 @@ public class Client {
         this.gender = gender;
     }
 
-    // TODO поменять на GRANTEDAUTHORITIES при изменении аутентификации
     public String getRoles() {
         return roles;
     }

@@ -3,7 +3,6 @@ package ustis.fitnesscentre.mapper;
 import org.springframework.jdbc.core.RowMapper;
 import ustis.fitnesscentre.model.Client;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
