@@ -1,6 +1,7 @@
 package ustis.fitnesscentre.service;
 
 import jakarta.security.auth.message.AuthException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ustis.fitnesscentre.model.Client;
@@ -15,6 +16,19 @@ import java.time.Duration;
 
 @Service
 public class ClubCardService {
+
+    @Value("${business-logic.first-level-of-discount-hours}")
+    private String firstLevelOfDiscountHours;
+
+    @Value("${business-logic.first-level-of-discount-percentage}")
+    private String firstLevelOfDiscountPercentage;
+
+    @Value("${business-logic.second-level-of-discount-hours}")
+    private String secondLevelOfDiscountHours;
+
+    @Value("${business-logic.second-level-of-discount-percentage}")
+    private String secondLevelOfDiscountPercentage;
+
     private final VisitRepository visitRepository;
     private final ClientService clientService;
 
@@ -42,12 +56,10 @@ public class ClubCardService {
     }
 
     private BigDecimal calculateDiscount(Duration timeSpent) {
-        // TODO вынести константы
-        // TODO написать для неограниченного количества констант
-        Duration firstLevel = Duration.ofHours(14).plusMinutes(0);
-        float firstLevelDiscountPrecent = 3;
-        Duration secondLevel = Duration.ofHours(32). plusMinutes(0);
-        float secondLevelDiscountPrecent = 6;
+        Duration firstLevel = Duration.ofHours(Integer.parseInt(firstLevelOfDiscountHours));
+        float firstLevelDiscountPrecent = Float.parseFloat(firstLevelOfDiscountPercentage);
+        Duration secondLevel = Duration.ofHours(Integer.parseInt(secondLevelOfDiscountHours));
+        float secondLevelDiscountPrecent = Float.parseFloat(secondLevelOfDiscountPercentage);
         MathContext moneyMathContext = new MathContext(2, RoundingMode.HALF_DOWN);
         BigDecimal standartCardPrice = new BigDecimal(100, moneyMathContext);
         if (timeSpent.compareTo(firstLevel) >= 0){
@@ -58,7 +70,7 @@ public class ClubCardService {
             }
             return standartCardPrice
                     .multiply(BigDecimal.valueOf(100-firstLevelDiscountPrecent))
-                    .divide(BigDecimal.valueOf(100));
+                    .divide(BigDecimal.valueOf(100), moneyMathContext);
         }
         return standartCardPrice;
     }

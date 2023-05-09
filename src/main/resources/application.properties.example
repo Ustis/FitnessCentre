@@ -1,0 +1,14 @@
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=
+
+jwt.signing-key=
+jwt.token-expiration-time=
+jwt.issuer=
+
+business-logic.first-level-of-discount-hours=14
+business-logic.first-level-of-discount-percentage=3
+business-logic.second-level-of-discount-hours=32
+business-logic.second-level-of-discount-percentage=6
+
