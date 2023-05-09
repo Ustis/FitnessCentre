@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import ustis.fitnesscentre.mapper.ClientMapper;
 import ustis.fitnesscentre.model.Client;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,6 +31,17 @@ public class ClientRepository {
         }
     }
 
+    public List<Client> getAll() {
+        try {
+            return this.jdbcTemplate.query(
+                    "SELECT id, phoneNumber, password, full_name, birthday_date, gender, balance, roles FROM client",
+                    new ClientMapper()
+            );
+        } catch (EmptyResultDataAccessException exception) {
+            return Collections.emptyList();
+        }
+    }
+
     public void update(Client client) {
         this.jdbcTemplate.update("UPDATE client SET phoneNumber = ?, password = ?, full_name = ?, birthday_date = ?, " +
                         "gender = ?, balance = ? WHERE id = ?",
@@ -39,7 +52,16 @@ public class ClientRepository {
         );
     }
 
-    // TODO придумать как выдавать роли
+    public void updateWithoutPassword(Client client) {
+        this.jdbcTemplate.update("UPDATE client SET phoneNumber = ?, full_name = ?, birthday_date = ?, " +
+                        "gender = ?, balance = ? WHERE id = ?",
+                client.getPhoneNumber(), client.getFullName(),
+                java.sql.Date.valueOf(client.getBirthdayDate()), client.getGender(),
+                client.getBalance(),
+                client.getId()
+        );
+    }
+
     public void save(Client client) {
         try {
             this.jdbcTemplate.update(
