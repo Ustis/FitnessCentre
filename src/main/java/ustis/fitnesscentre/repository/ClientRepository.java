@@ -66,7 +66,7 @@ public class ClientRepository {
         try {
             this.jdbcTemplate.update(
                     "INSERT INTO client ( phonenumber, password, full_name, birthday_date, gender, balance, roles) \n" +
-                            "VALUES ( ?, ? , ? , ? , ? );",
+                            "VALUES ( ?, ?, ?, ?, ?, ?, ? );",
                     client.getPhoneNumber(), client.getPassword(), client.getFullName(),
                     java.sql.Date.valueOf(client.getBirthdayDate()), client.getGender(),
                     client.getBalance(), client.getRoles()
