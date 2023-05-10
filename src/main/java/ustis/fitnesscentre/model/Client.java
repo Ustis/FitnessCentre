@@ -1,6 +1,8 @@
 package ustis.fitnesscentre.model;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 public class Client {
@@ -17,20 +19,26 @@ public class Client {
     }
 
     public Client(String phoneNumber, CharSequence password, String fullName, LocalDate birthdayDate, String gender) {
+        MathContext moneyMathContext = new MathContext(2, RoundingMode.HALF_DOWN);
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.fullName = fullName;
         this.birthdayDate = birthdayDate;
         this.gender = gender;
+        this.roles = "ROLE_USER";
+        this.balance = new BigDecimal(0, moneyMathContext);
     }
 
     public Client(Long id, String phoneNumber, CharSequence password, String fullName, LocalDate birthdayDate, String gender) {
+        MathContext moneyMathContext = new MathContext(2, RoundingMode.HALF_DOWN);
         this.id = id;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.fullName = fullName;
         this.birthdayDate = birthdayDate;
         this.gender = gender;
+        this.roles = "ROLE_USER";
+        this.balance = new BigDecimal(0, moneyMathContext);
     }
 
     public Client(Long id, String phoneNumber, CharSequence password, String fullName, LocalDate birthdayDate, String gender, String roles, BigDecimal balance) {
@@ -54,7 +62,10 @@ public class Client {
         this.balance = balance;
     }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
