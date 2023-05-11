@@ -61,6 +61,8 @@ public class ClubCardService {
 
     public BigDecimal cardPrice(Client client) {
         Duration timeSpent = visitRepository.findTimeSpent(client.getId());
+        if (timeSpent == null)
+            return new BigDecimal(100, new MathContext(2, RoundingMode.HALF_DOWN));
         return calculateDiscount(timeSpent);
     }
 

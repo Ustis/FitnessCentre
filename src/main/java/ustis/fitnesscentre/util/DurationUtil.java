@@ -4,6 +4,8 @@ import java.time.Duration;
 
 public class DurationUtil {
     public static Duration stringToDuration(String source) {
+        if(source==null)
+            return null;
         String[] dateAndTimeParts = source.split(" ");
         if (dateAndTimeParts.length == 1) {
             String[] timeParts = dateAndTimeParts[0].split(":");
