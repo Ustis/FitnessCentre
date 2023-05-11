@@ -1,10 +1,10 @@
 package ustis.fitnesscentre.service;
 
-import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ustis.fitnesscentre.dto.CardPriceResponse;
+import ustis.fitnesscentre.exception.UserNotFoundException;
 import ustis.fitnesscentre.model.Client;
 import ustis.fitnesscentre.model.ClubCard;
 import ustis.fitnesscentre.repository.ClientRepository;
@@ -46,15 +46,13 @@ public class ClubCardService {
         this.clientRepository = clientRepository;
     }
 
-    public Boolean isCardActive(Authentication clientAuth) throws AuthException {
-        Client client = clientService.loadByPhoneNumber(clientAuth.getName())
-                .orElseThrow(() -> new AuthException("Пользователь не найден"));
+    public Boolean isCardActive(Authentication clientAuth) throws UserNotFoundException {
+        Client client = clientService.loadByPhoneNumber(clientAuth.getName()).get();
         return clubCardRepository.isClubCardActive(client.getId());
     }
 
-    public CardPriceResponse cardPriceResponse(Authentication clientAuth) throws AuthException {
-        Client client = clientService.loadByPhoneNumber(clientAuth.getName())
-                .orElseThrow(() -> new AuthException("Пользователь не найден"));
+    public CardPriceResponse cardPriceResponse(Authentication clientAuth) throws UserNotFoundException {
+        Client client = clientService.loadByPhoneNumber(clientAuth.getName()).get();
         DecimalFormat df = new DecimalFormat("#,###.00");
 
         return new CardPriceResponse(df.format(cardPrice(client)),
@@ -86,9 +84,8 @@ public class ClubCardService {
         return standartCardPrice;
     }
 
-    public void buyClubCard(Authentication clientAuth) throws AuthException {
-        Client client = clientService.loadByPhoneNumber(clientAuth.getName())
-                .orElseThrow(() -> new AuthException("Пользователь не найден"));
+    public void buyClubCard(Authentication clientAuth) throws UserNotFoundException {
+        Client client = clientService.loadByPhoneNumber(clientAuth.getName()).get();
         BigDecimal price = cardPrice(client);
         client.setBalance(
                 client.getBalance()

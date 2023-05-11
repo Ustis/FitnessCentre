@@ -1,14 +1,11 @@
 package ustis.fitnesscentre.controller;
 
-import jakarta.security.auth.message.AuthException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ustis.fitnesscentre.dto.VisitArrivalRequest;
-import ustis.fitnesscentre.dto.VisitLeavingRequest;
+import ustis.fitnesscentre.exception.UserNotFoundException;
 import ustis.fitnesscentre.service.VisitService;
 
 @RestController
@@ -21,13 +18,13 @@ public class VisitController {
     }
 
     @PostMapping("/arrival")
-    public ResponseEntity<Void> clientArrival(Authentication clientAuth) throws AuthException {
+    public ResponseEntity<Void> clientArrival(Authentication clientAuth) throws UserNotFoundException {
         visitService.recordArrival(clientAuth);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/leaving")
-    public ResponseEntity<Void> clientLeaving(Authentication clientAuth) throws AuthException {
+    public ResponseEntity<Void> clientLeaving(Authentication clientAuth) throws UserNotFoundException {
         visitService.recordLeaving(clientAuth);
         return ResponseEntity.ok().build();
     }

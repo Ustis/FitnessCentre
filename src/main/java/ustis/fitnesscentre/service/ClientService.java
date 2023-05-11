@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ustis.fitnesscentre.dto.ChangeClientRequest;
 import ustis.fitnesscentre.dto.ClientDataResponse;
+import ustis.fitnesscentre.exception.UserNotFoundException;
 import ustis.fitnesscentre.model.Client;
 import ustis.fitnesscentre.repository.ClientRepository;
 
@@ -22,7 +23,9 @@ public class ClientService implements UserDetailsService {
         this.repository = repository;
     }
 
-    public Optional<Client> loadByPhoneNumber(String phoneNumber) {
+    public Optional<Client> loadByPhoneNumber(String phoneNumber) throws UserNotFoundException {
+        Client client = repository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new UserNotFoundException());
         return repository.findByPhoneNumber(phoneNumber);
     }
 

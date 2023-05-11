@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ustis.fitnesscentre.dto.JwtRequest;
 import ustis.fitnesscentre.dto.JwtResponse;
 import ustis.fitnesscentre.dto.RegisterReqest;
+import ustis.fitnesscentre.exception.UserNotFoundException;
 import ustis.fitnesscentre.model.Client;
 import ustis.fitnesscentre.util.JwtTokenUtil;
 
@@ -23,9 +24,8 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public JwtResponse login(JwtRequest authRequest) throws AuthException {
-        final Client client = clientService.loadByPhoneNumber(authRequest.getPhoneNumber())
-                .orElseThrow(() -> new AuthException("Пользователь не найден"));
+    public JwtResponse login(JwtRequest authRequest) throws AuthException, UserNotFoundException {
+        final Client client = clientService.loadByPhoneNumber(authRequest.getPhoneNumber()).get();
         if (passwordEncoder.matches(authRequest.getPassword(), client.getPassword().toString())) {
             final String accessToken = jwtTokenUtil.generateToken(client);
             return new JwtResponse(accessToken, client.getRoles());
@@ -45,8 +45,7 @@ public class AuthService {
         clientService.save(client);
     }
 
-    public Client getClientFromToken(String token) throws AuthException {
-        return clientService.loadByPhoneNumber(jwtTokenUtil.getUsernameFromToken(token))
-                .orElseThrow(() -> new AuthException("Пользователь по данному токену не найден"));
+    public Client getClientFromToken(String token) throws UserNotFoundException {
+        return clientService.loadByPhoneNumber(jwtTokenUtil.getUsernameFromToken(token)).get();
     }
 }
