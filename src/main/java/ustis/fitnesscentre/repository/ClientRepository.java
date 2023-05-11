@@ -4,6 +4,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ustis.fitnesscentre.mapper.ClientMapper;
 import ustis.fitnesscentre.model.Client;
@@ -64,13 +66,18 @@ public class ClientRepository {
 
     public void save(Client client) {
         try {
-            this.jdbcTemplate.update(
-                    "INSERT INTO client ( phonenumber, password, full_name, birthday_date, gender, balance, roles) \n" +
-                            "VALUES ( ?, ?, ?, ?, ?, ?, ? );",
-                    client.getPhoneNumber(), client.getPassword(), client.getFullName(),
-                    java.sql.Date.valueOf(client.getBirthdayDate()), client.getGender(),
-                    client.getBalance(), client.getRoles()
-            );
+            String sql = "INSERT INTO client (phonenumber, password, full_name, birthday_date, gender, balance, roles) " +
+                    "VALUES (:phoneNumber, :password, :fullName, :birthdayDate, :gender, :balance, :roles)";
+            MapSqlParameterSource params = new MapSqlParameterSource()
+                    .addValue("phoneNumber", client.getPhoneNumber())
+                    .addValue("password", client.getPassword())
+                    .addValue("fullName", client.getFullName())
+                    .addValue("birthdayDate", java.sql.Date.valueOf(client.getBirthdayDate()))
+                    .addValue("gender", client.getGender())
+                    .addValue("balance", client.getBalance())
+                    .addValue("roles", client.getRoles());
+            NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+            namedParameterJdbcTemplate.update(sql, params);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("client_phone_number_idx")) {
                 throw new DuplicateKeyException("Пользователь с таким номером телефона уже существует");

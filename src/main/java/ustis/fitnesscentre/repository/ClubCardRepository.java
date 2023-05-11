@@ -2,6 +2,8 @@ package ustis.fitnesscentre.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ustis.fitnesscentre.mapper.ClubCardMapper;
 import ustis.fitnesscentre.model.ClubCard;
@@ -34,13 +36,27 @@ public class ClubCardRepository {
     }
 
     public void save(ClubCard clubCard) {
-        jdbcTemplate.update("INSERT INTO club_card (active_since, active_until, is_active, client_id) VALUES (?, ?, ?, ?)",
-                Date.valueOf(clubCard.getActiveSince()), Date.valueOf(clubCard.getActiveUntil()), clubCard.isActive(), clubCard.getClientId());
+        String sql = "INSERT INTO club_card (active_since, active_until, is_active, client_id) " +
+                "VALUES (:activeSince, :activeUntil, :isActive, :clientId)";
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("activeSince", Date.valueOf(clubCard.getActiveSince()))
+                .addValue("activeUntil", Date.valueOf(clubCard.getActiveUntil()))
+                .addValue("isActive", clubCard.isActive())
+                .addValue("clientId", clubCard.getClientId());
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
     public void update(ClubCard clubCard) {
-        jdbcTemplate.update("UPDATE club_card SET active_since = ?, active_until = ?, is_active = ?, client_id = ? WHERE id = ?",
-                Date.valueOf(clubCard.getActiveSince()), Date.valueOf(clubCard.getActiveUntil()), clubCard.isActive(), clubCard.getClientId(), clubCard.getId());
+        String sql = "UPDATE club_card SET active_since = :activeSince, active_until = :activeUntil, is_active = :isActive, client_id = :clientId WHERE id = :id";
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("activeSince", Date.valueOf(clubCard.getActiveSince()))
+                .addValue("activeUntil", Date.valueOf(clubCard.getActiveUntil()))
+                .addValue("isActive", clubCard.isActive())
+                .addValue("clientId", clubCard.getClientId())
+                .addValue("id", clubCard.getId());
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
     public void deleteById(Long id) {
