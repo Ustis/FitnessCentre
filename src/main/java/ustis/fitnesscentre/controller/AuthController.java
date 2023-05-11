@@ -28,7 +28,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody RegisterReqest registerReqest) {
-        // TODO добавить spring validation и перенести функциональность в RegisterRequest
         if(!registerReqest.getPassword().equals(registerReqest.getPasswordConfirmation()))
             throw new RuntimeException("Пароли не совпадают");
         authService.register(registerReqest);

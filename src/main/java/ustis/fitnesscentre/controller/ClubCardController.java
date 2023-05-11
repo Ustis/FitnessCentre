@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ustis.fitnesscentre.dto.CardPriceResponse;
 import ustis.fitnesscentre.service.ClubCardService;
 
 import java.text.DecimalFormat;
@@ -26,9 +27,8 @@ public class ClubCardController {
     }
 
     @GetMapping("/cardPrice")
-    public ResponseEntity<String> cardPrice(Authentication clientAuth) throws AuthException {
-        DecimalFormat df = new DecimalFormat("#,###.00");
-        return ResponseEntity.ok(df.format(clubCardService.cardPrice(clientAuth)));
+    public ResponseEntity<CardPriceResponse> cardPrice(Authentication clientAuth) throws AuthException {
+        return ResponseEntity.ok(clubCardService.cardPriceResponse(clientAuth));
     }
 
     @PostMapping("/buyCard")

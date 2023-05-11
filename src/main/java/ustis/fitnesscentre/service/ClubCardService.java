@@ -4,7 +4,9 @@ import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import ustis.fitnesscentre.dto.CardPriceResponse;
 import ustis.fitnesscentre.model.Client;
+import ustis.fitnesscentre.model.ClubCard;
 import ustis.fitnesscentre.repository.ClientRepository;
 import ustis.fitnesscentre.repository.ClubCardRepository;
 import ustis.fitnesscentre.repository.VisitRepository;
@@ -12,7 +14,9 @@ import ustis.fitnesscentre.repository.VisitRepository;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.Duration;
+import java.time.LocalDate;
 
 @Service
 public class ClubCardService {
@@ -48,9 +52,16 @@ public class ClubCardService {
         return clubCardRepository.isClubCardActive(client.getId());
     }
 
-    public BigDecimal cardPrice(Authentication clientAuth) throws AuthException {
+    public CardPriceResponse cardPriceResponse(Authentication clientAuth) throws AuthException {
         Client client = clientService.loadByPhoneNumber(clientAuth.getName())
                 .orElseThrow(() -> new AuthException("Пользователь не найден"));
+        DecimalFormat df = new DecimalFormat("#,###.00");
+
+        return new CardPriceResponse(df.format(cardPrice(client)),
+                df.format(client.getBalance()));
+    }
+
+    public BigDecimal cardPrice(Client client) {
         Duration timeSpent = visitRepository.findTimeSpent(client.getId());
         return calculateDiscount(timeSpent);
     }
@@ -78,11 +89,17 @@ public class ClubCardService {
     public void buyClubCard(Authentication clientAuth) throws AuthException {
         Client client = clientService.loadByPhoneNumber(clientAuth.getName())
                 .orElseThrow(() -> new AuthException("Пользователь не найден"));
-        BigDecimal price = cardPrice(clientAuth);
+        BigDecimal price = cardPrice(client);
         client.setBalance(
                 client.getBalance()
                         .subtract(price)
         );
         clientRepository.update(client);
+        clubCardRepository.save(new ClubCard(
+                LocalDate.now(),
+                LocalDate.now().plusMonths(1),
+                true,
+                client.getId()
+        ));
     }
 }

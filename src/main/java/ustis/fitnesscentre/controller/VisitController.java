@@ -21,14 +21,14 @@ public class VisitController {
     }
 
     @PostMapping("/arrival")
-    public ResponseEntity<Void> clientArrival(Authentication clientAuth, @RequestBody VisitArrivalRequest request) throws AuthException {
-        visitService.recordArrival(clientAuth, request);
+    public ResponseEntity<Void> clientArrival(Authentication clientAuth) throws AuthException {
+        visitService.recordArrival(clientAuth);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/leaving")
-    public ResponseEntity<Void> clientLeaving(Authentication clientAuth, @RequestBody VisitLeavingRequest request) throws AuthException {
-        visitService.recordLeaving(clientAuth, request);
+    public ResponseEntity<Void> clientLeaving(Authentication clientAuth) throws AuthException {
+        visitService.recordLeaving(clientAuth);
         return ResponseEntity.ok().build();
     }
 }

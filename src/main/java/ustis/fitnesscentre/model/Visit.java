@@ -11,6 +11,11 @@ public class Visit {
     public Visit() {
     }
 
+    public Visit(LocalDateTime arrival, Long clientId) {
+        this.arrival = arrival;
+        this.clientId = clientId;
+    }
+
     public Visit(LocalDateTime arrival, LocalDateTime leaving, Long clientId) {
         this.arrival = arrival;
         this.leaving = leaving;

@@ -59,8 +59,12 @@ public class VisitRepository {
     }
 
     public void save(Visit visit) {
-        jdbcTemplate.update("INSERT INTO visit (arrival, leaving, client_id) VALUES (?, ?, ?)",
-                Timestamp.valueOf(visit.getArrival()), Timestamp.valueOf(visit.getLeaving()), visit.getClientId());
+        if(visit.getLeaving() == null)
+            jdbcTemplate.update("INSERT INTO visit (arrival, client_id) VALUES (?, ?)",
+                Timestamp.valueOf(visit.getArrival()), visit.getClientId());
+        else
+            jdbcTemplate.update("INSERT INTO visit (arrival, leaving, client_id) VALUES (?, ?, ?)",
+                    Timestamp.valueOf(visit.getArrival()), Timestamp.valueOf(visit.getLeaving()), visit.getClientId());
     }
 
     public void update(Visit visit) {

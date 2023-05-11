@@ -21,22 +21,22 @@ public class VisitService {
         this.clientService = clientService;
     }
 
-    public void recordArrival(Authentication clientAuth, VisitArrivalRequest visitArrivalRequest) throws AuthException {
+    public void recordArrival(Authentication clientAuth) throws AuthException {
         Client client = clientService.loadByPhoneNumber(clientAuth.getName())
                 .orElseThrow(() -> new AuthException("Пользователь не найден"));
 
-        Visit visit = new Visit(visitArrivalRequest.getArrivalDateTime(), LocalDateTime.now(), client.getId());
+        Visit visit = new Visit(LocalDateTime.now(), client.getId());
 
         visitRepository.save(visit);
     }
 
-    public void recordLeaving(Authentication clientAuth, VisitLeavingRequest visitLeavingRequest) throws AuthException {
+    public void recordLeaving(Authentication clientAuth) throws AuthException {
         Client client = clientService.loadByPhoneNumber(clientAuth.getName())
                 .orElseThrow(() -> new AuthException("Пользователь не найден"));
 
         Visit visit = visitRepository.findIncompleteSession(client.getId())
                 .orElseThrow(() -> new RuntimeException("Внутренняя ошибка сервера"));
-        visit.setLeaving(visitLeavingRequest.getLeavingDateTime());
+        visit.setLeaving(LocalDateTime.now());
         visitRepository.update(visit);
     }
 }
