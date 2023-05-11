@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ustis.fitnesscentre.dto.CardPriceResponse;
+import ustis.fitnesscentre.exception.UserNotFoundException;
 import ustis.fitnesscentre.service.ClubCardService;
-
-import java.text.DecimalFormat;
 
 @RestController
 @RequestMapping("/api/clubCard")
@@ -22,17 +21,17 @@ public class ClubCardController {
     }
 
     @GetMapping("/isCardActive")
-    public ResponseEntity<Boolean> isClubCardActive(Authentication clientAuth) throws AuthException {
+    public ResponseEntity<Boolean> isClubCardActive(Authentication clientAuth) throws UserNotFoundException {
         return ResponseEntity.ok(clubCardService.isCardActive(clientAuth));
     }
 
     @GetMapping("/cardPrice")
-    public ResponseEntity<CardPriceResponse> cardPrice(Authentication clientAuth) throws AuthException {
+    public ResponseEntity<CardPriceResponse> cardPrice(Authentication clientAuth) throws UserNotFoundException {
         return ResponseEntity.ok(clubCardService.cardPriceResponse(clientAuth));
     }
 
     @PostMapping("/buyCard")
-    public ResponseEntity<Void> buyCard(Authentication clientAuth) throws AuthException {
+    public ResponseEntity<Void> buyCard(Authentication clientAuth) throws UserNotFoundException {
         clubCardService.buyClubCard(clientAuth);
         return ResponseEntity.ok().build();
     }

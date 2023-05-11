@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ustis.fitnesscentre.dto.JwtRequest;
 import ustis.fitnesscentre.dto.JwtResponse;
 import ustis.fitnesscentre.dto.RegisterReqest;
+import ustis.fitnesscentre.exception.UserNotFoundException;
 import ustis.fitnesscentre.service.AuthService;
 
 @RestController
@@ -21,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) throws AuthException {
+    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) throws UserNotFoundException, AuthException {
         final JwtResponse token = authService.login(authRequest);
         return ResponseEntity.ok(token);
     }
